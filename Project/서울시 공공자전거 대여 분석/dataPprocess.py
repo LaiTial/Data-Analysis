@@ -3,6 +3,9 @@
 Created on Thu Jun 23 16:58:20 2022
 
 @author: asna9
+
+서울시 공공자전거 대여정보 분석.
+0~5 파일을 통합, 불필요한 컬럼 삭제하고 적절한 자료형으로 변환하는 등 전처리를 하는 py.
 """
 
 import pandas as pd
