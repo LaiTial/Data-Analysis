@@ -12,8 +12,8 @@ import requests
 from bs4 import BeautifulSoup
 import openpyxl
 
-keyword = '향수'#input("keyword? ")
-pageNum = 1#int(input("How much page? "))
+keyword = input("keyword? ")
+pageNum = int(input("How much page? "))
 
 targetSite="https://kin.naver.com/search/list.naver?query=" + keyword + "&page="
 nameTag = ['Question', 'Date', 'Contents', 'Link']
