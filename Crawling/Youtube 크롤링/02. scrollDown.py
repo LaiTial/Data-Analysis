@@ -5,6 +5,8 @@ youtube crawling
 스크롤을 n번 내리고
 제목, 조회수, 영상 업로드한 날짜를 crawling
 실시간 생방송일 경우 skip.
+
+새로 엑셀 파일을 만들어서 저장
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -13,8 +15,9 @@ import openpyxl
 import time
 
 # 엑셀 시트 open
-wb = openpyxl.Workbook()
+wb = openpyxl.Workbook() #새로 엑셀파일 생성
 ws = wb.create_sheet("클레")
+ws.protection.disable() #시트 보호기능 해제
 
 # 데이터 추가
 ws['A1'] = 'Num'
