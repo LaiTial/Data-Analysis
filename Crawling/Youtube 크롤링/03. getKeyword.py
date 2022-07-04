@@ -5,6 +5,8 @@ youtube crawling
 사용자로부터 키워드를 입력받아 검색.
 스크롤을 n번 내리고 제목, 조회수, 영상 업로드한 날짜를 crawling
 실시간 생방송일 경우 skip.
+
+이미 존재하는 엑셀 파일 youtube.xlsx에 저장
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -12,15 +14,25 @@ from selenium.webdriver.common.keys import Keys #드라이버가 특정 키를 �
 import openpyxl
 import time
 
+def makeXlsx(filename, name, tagData):
+    # 엑셀 시트 open
+    wb = openpyxl.load_workbook(filename) #기존 엑셀파일 open
+    ws = wb['Sheet'] #시트명이 'Sheet'인 시트 선택
+    ws.title = name #시트명 변경
+    ws.protection.disable()
+    
+    # 데이터 추가
+    ws['A1'] = 'Num'
+    ws['B1'], ws['C1'], ws['D1'] = tagData
+    
+    return wb, ws
+    
+filename = 'youtube.xlsx'
+tagData = ['제목', '조회수', '날짜']
+
 keyword = input("keyword? ")
 
-# 엑셀 시트 open
-wb = openpyxl.Workbook()
-ws = wb.create_sheet(keyword + "data")
-
-# 데이터 추가
-ws['A1'] = 'Num'
-ws['B1'], ws['C1'], ws['D1'] = '제목', '조회수', '날짜'
+wb, ws = makeXlsx(filename, keyword, tagData)
 
 driver = webdriver.Chrome('../chromedriver.exe')
 
@@ -52,4 +64,4 @@ for i, info in enumerate(infos):
     ws.append(video)
     
     
-wb.save("youtube.xlsx")
+wb.save(filename)
