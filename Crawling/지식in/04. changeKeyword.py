@@ -31,8 +31,8 @@ for i in range(1, pageNum+1):
     for lists in Q:
         
         #for question in Qs:
-        title = lists.select_one('a').text #제목
-        link = lists.select_one('a').attrs['href'] #링크
+        title = lists.select_one('._searchListTitleAnchor').text #제목
+        link = lists.select_one('._searchListTitleAnchor').attrs['href'] #링크
         
         date = lists.select_one('.txt_inline').text # 날짜
         content = lists.select_one('.txt_inline+dd').text # 내용 #dd:nth-of-type(2) dd:nth-of-child(3) 가능
