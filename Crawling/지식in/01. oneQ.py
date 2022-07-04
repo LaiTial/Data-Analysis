@@ -13,30 +13,12 @@ response = requests.get("https://kin.naver.com/search/list.naver?query=python")
 html = response.text
 soup = BeautifulSoup(html, 'html.parser')
 
-knowIn = {}
-nameTag = ['Date', 'Contents', 'Link']
-
-# 지식인 list를 가져온다
-Q = soup.select_one('.basic1')
-
-#for question in Q:
-getQ = Q.select_one('dt > a') #제목, 링크
-getCont = Q.select('dd') # 날짜, 내용
-
-# 제목과 링크
-title = getQ.text
-link = getQ.get('href')
-
-tempL = [link]
-
-# 날짜와 본문내용을 얻어온다
-tempL.insert(0, getCont[0].text)
-tempL.insert(1, getCont[1].text)
-
-knowIn[title] = tempL
-
-for title, contents in knowIn.items():
-    print(f"[{title}]\n")
+#for question in Qs:
+title = soup.select_one('._searchListTitleAnchor').text #제목
+link = soup.select_one('._searchListTitleAnchor').attrs['href'] #링크
+        
+date = soup.select_one('.txt_inline').text # 날짜
+content = soup.select_one('.txt_inline+dd').text # 내용 #dd:nth-of-type(2) dd:nth-of-child(3) 가능
     
-    for i in range(3):
-        print(nameTag[i]+":",contents[i])
+print(title, date, content, link, sep='\n')
+
