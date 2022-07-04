@@ -4,6 +4,8 @@ youtube crawling
 
 바로 보이는 제목, 조회수, 영상 업로드한 날짜를 crawling
 실시간 생방송일 경우 skip.
+스크롤 없이 바로 로딩되는 영상들만 가져온다!
+그리고 엑셀에 저장!
 """
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -34,6 +36,7 @@ infos = driver.find_elements(By.CSS_SELECTOR, "div.text-wrapper")
 
 for info in infos:
     videoC = info.find_element(By.CSS_SELECTOR, '.style-scope.ytd-video-renderer')
+    #metadata-line>span:nth-child(n)으로 n번째 선택 가능.
     
     video = videoC.text.split('\n')
     
