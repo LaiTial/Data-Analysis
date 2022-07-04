@@ -9,14 +9,10 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys #드라이버가 특정 키를 입력하게 만들때 사용
 import time
-#targetsite = "https://search.shopping.naver.com/search/all?query="
-
-#keyword = input("keyword? ")
 
 driver = webdriver.Chrome('../chromedriver.exe')
 
 # get() 메소드로 가상 크롬에 크롤링할 타겟 사이트를 띄운다.
-#driver.get(targetsite+"keyword")
 driver.get("https://search.shopping.naver.com/search/all?query=%EC%9E%A0%EC%98%B7")
 driver.maximize_window() #화면을 최대화
 driver.implicitly_wait(20) #드라이버 구동 후 n초 동안 기다린다.
