@@ -26,32 +26,26 @@ for i in range(1, pageNum+1):
     soup = BeautifulSoup(html, 'html.parser')
     
     # 지식인 list를 가져온다
-    Q = soup.select_one('.basic1')
-    
-    #for question in Qs:
-    getQs = Q.select('dt > a') #제목, 링크
-    getConts = Q.select('li') # 날짜, 내용
+    Q = soup.select('.basic1 > li')
     
     # 제목과 링크
-    for getQ, getCont in zip(getQs, getConts):
-        title = getQ.text
-        link = getQ.get('href')
-    
-        tempL = [title, link]
+    for lists in Q:
         
-        content = getCont.select('dd') # 날짜, 내용
+        #for question in Qs:
+        title = lists.select_one('a').text #제목
+        link = lists.select_one('a').attrs['href'] #링크
         
-        # 날짜와 본문내용을 얻어온다
-        tempL.insert(1, content[0].text)
-        tempL.insert(2, content[1].text)
+        date = lists.select_one('.txt_inline').text # 날짜
+        content = lists.select_one('.txt_inline+dd').text # 내용 #dd:nth-of-type(2) dd:nth-of-child(3) 가능
     
+        tempL = [title, date, content, link]
         knowIn["Q"+str(num)] = tempL
         
         num += 1
-
+        
 # xlsx 시트 open
 wb = openpyxl.Workbook()
-ws = wb.create_sheet("지식in save")
+ws = wb.create_sheet(keyword+" save")
 
 # 데이터 추가
 ws['A1'] = 'Num'
