@@ -11,8 +11,8 @@ import time
 import pyperclip
 import pyautogui
 
-user_id = 'so-clsrnrk-ehlfk'
-user_pw = 'vfilps295'
+user_id = 'id명'
+user_pw = 'PW명'
 
 driver = webdriver.Chrome('../chromedriver.exe')
 
