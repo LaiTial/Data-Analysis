@@ -1,0 +1,107 @@
+"""
+chrome driver
+쇼핑 crawling
+
+7단계 : 이미지 다운
+상품명, 가격, 상세페이지 링크
+
+img download하는 함수
+
+1. urllib.request.urlopen : 이미지 저장 없이 바로 사용
+2. urllib.request.urlretrieve("이미지 주소", "저장 할 파일이름") : 이미지 저장해서 사용
+"""
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys #드라이버가 특정 키를 입력하게 만들때 사용
+import time
+from bs4 import BeautifulSoup
+import openpyxl
+from selenium.webdriver.common.action_chains import ActionChains
+import urllib.request
+import os
+
+def makeXlsx(name, tagData):
+    # 엑셀 시트 open
+    
+    wb = openpyxl.Workbook() #기존 엑셀파일 open
+    ws = wb.create_sheet(name)
+    ws.protection.disable()
+    
+    # 데이터 추가
+    ws['A1'] = 'Num'
+    ws['B1'], ws['C1'], ws['D1'], ws['E1'] = tagData
+    
+    return wb, ws
+
+indexNum = 1
+tagData = ['product', 'price', 'img', 'link']
+currentPath = os.getcwd()
+keyword = input("keyword? ")
+pageNum = input("How many page? ")
+
+wb, ws = makeXlsx(keyword, tagData)
+print(currentPath)
+
+driver = webdriver.Chrome('../chromedriver.exe')
+
+for pageN in range(1, pageNum+1):
+    
+    targetsite = f"https://search.shopping.naver.com/search/all?pagingIndex={pageN}&query={keyword}"
+
+    # get() 메소드로 가상 크롬에 크롤링할 타겟 사이트를 띄운다.
+    driver.get(targetsite)
+    driver.maximize_window() #화면을 최대화
+    driver.implicitly_wait(20) #드라이버 구동 후 n초 동안 기다린다.
+    preData = 0
+    
+    actions = ActionChains(driver)
+    
+    # 스크롤 내린다
+    while True:
+    
+        driver.find_element(By.CSS_SELECTOR, 'body').send_keys(Keys.END) # 맨 밑까지 스크롤을 내린다.
+        time.sleep(1) #잠깐의 텀을 둔다
+        
+        items = driver.find_elements(By.CSS_SELECTOR, 'li.basicList_item__2XT81')
+        nowData = len(items)
+    
+        if(nowData == preData):
+            break;
+        preData = nowData
+    
+    time.sleep(1)
+    
+    #이미지 로딩 안된걸 로딩시키기 위해 다시 한번씩 보여준다
+    
+    for item in items:
+        actions.move_to_element(item).perform()
+    
+    # 페이지 소스를 얻어온다.
+    html = driver.page_source
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    # 컨테이너
+    contentBox = soup.select('.basicList_item__2XT81')
+    
+    print("\n")
+    
+    for info in contentBox:
+        
+        product = info.select_one('.basicList_link__1MaTN') #a 태그 가져온다
+        
+        productN = product.text.strip().replace('/', ' or ') #상품명
+        link = product.attrs['href'] #상세페이지 링크
+        price = info.select_one('.price_num__2WUXn').text.strip() #가격
+        
+        try:
+            img = info.select_one('.thumbnail_thumb__3Agq6 > img').attrs['src'] #이미지 경로 가져온다
+        except:
+            continue;
+        
+        ws.append([indexNum, productN, price, img, link])
+        
+        urllib.request.urlretrieve(img, f'imgs/{productN}.jpg')
+        
+        indexNum +=1
+        
+wb.save("shopping.xlsx")
