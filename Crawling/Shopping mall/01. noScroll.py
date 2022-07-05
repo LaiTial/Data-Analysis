@@ -17,10 +17,6 @@ driver.get("https://search.shopping.naver.com/search/all?query=%EC%9E%A0%EC%98%B
 driver.maximize_window() #화면을 최대화
 driver.implicitly_wait(20) #드라이버 구동 후 n초 동안 기다린다.
 
-# 스크롤 내린다
-#driver.find_element(By.CSS_SELECTOR, 'body').send_keys(Keys.END) # 맨 밑까지 스크롤을 내린다.
-#time.sleep(1) #잠깐의 텀을 둔다
-
 # 페이지 소스를 얻어온다.
 html = driver.page_source
 soup = BeautifulSoup(html, 'html.parser')
