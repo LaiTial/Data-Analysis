@@ -1,7 +1,7 @@
 """
 chrome driver
 쇼핑 crawling
-1단계 : 스크롤 전 크롤링
+2단계 : 스크롤 끝까지 내리고 크롤링
 상품명, 가격, 상세페이지 링크
 """
 from selenium import webdriver
