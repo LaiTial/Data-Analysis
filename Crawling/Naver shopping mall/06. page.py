@@ -11,9 +11,10 @@ from selenium.webdriver.common.keys import Keys #드라이버가 특정 키를 �
 import time
 from bs4 import BeautifulSoup
 import openpyxl
-
+from selenium.webdriver.common.action_chains import ActionChains
 def makeXlsx(name, tagData):
     # 엑셀 시트 open
+    
     wb = openpyxl.Workbook() #기존 엑셀파일 open
     ws = wb.create_sheet(name)
     ws.protection.disable()
@@ -43,20 +44,27 @@ for pageN in range(1, pageNum+1):
     driver.implicitly_wait(20) #드라이버 구동 후 n초 동안 기다린다.
     preData = 0
     
+    actions = ActionChains(driver)
+    
     # 스크롤 내린다
     while True:
     
         driver.find_element(By.CSS_SELECTOR, 'body').send_keys(Keys.END) # 맨 밑까지 스크롤을 내린다.
         time.sleep(1) #잠깐의 텀을 둔다
         
-        nowData = len(driver.find_elements(By.CSS_SELECTOR, 'li'))
+        items = driver.find_elements(By.CSS_SELECTOR, 'li.basicList_item__2XT81')
+        nowData = len(items)
     
         if(nowData == preData):
             break;
-        else:
-            preData = nowData
+        preData = nowData
     
     time.sleep(1)
+    
+    #이미지 로딩 안된걸 로딩시키기 위해 다시 한번씩 보여준다
+    
+    for item in items:
+        actions.move_to_element(item).perform()
     
     # 페이지 소스를 얻어온다.
     html = driver.page_source
